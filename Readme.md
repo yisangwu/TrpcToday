@@ -47,7 +47,7 @@ PS E:\TrpcToday> go run .
 
 8. 修改proto文件，更新桩代码：
     注意，修改的是E:\trpc_hello.proto。proto有go_package 的git仓库更新，则没有这个问题，可直接在项目目录更新
-PS E:\> trpc create -p trpc_hello.proto -o .\TrpcToday\stub\github.com\trpcproto\trpchello\ --rpconly
+PS E:\> trpc create -p trpc_hello.proto -o .\TrpcToday\stub\github.com\trpcproto\trpchello\ --rpconly -f
     执行桩代码更新后，proto会复制到stub目录。proto有go_package 的git仓库更新，则没有这个问题，可直接在项目目录更新
 9. 访问新接口：
 
