@@ -46,9 +46,9 @@ PS E:\TrpcToday> go run .
         }
 
 8. 修改proto文件，更新桩代码：
-
+    注意，修改的是E:\trpc_hello.proto。proto有go_package 的git仓库更新，则没有这个问题，可直接在项目目录更新
 PS E:\> trpc create -p trpc_hello.proto -o .\TrpcToday\stub\github.com\trpcproto\trpchello\ --rpconly
-
+    执行桩代码更新后，proto会复制到stub目录。proto有go_package 的git仓库更新，则没有这个问题，可直接在项目目录更新
 9. 访问新接口：
 
     curl -X POST -H 'Content-Type: application/json' -i 'http://127.0.0.1:8000/trpchello.HelloService/HandleSeconds' --data '{"message":"13345566"}'

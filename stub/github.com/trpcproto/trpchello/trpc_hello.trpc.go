@@ -22,6 +22,8 @@ type HelloServiceService interface {
 	HandleFirst(ctx context.Context, req *HelloReq) (*HelloRsp, error)
 
 	HandleSeconds(ctx context.Context, req *HelloSecondReq) (*HelloSecondRsp, error)
+
+	HandleThird(ctx context.Context, req *HelloThirdReq) (*HelloThirdRsp, error)
 }
 
 func HelloServiceService_HandleFirst_Handler(svr interface{}, ctx context.Context, f server.FilterFunc) (interface{}, error) {
@@ -60,6 +62,24 @@ func HelloServiceService_HandleSeconds_Handler(svr interface{}, ctx context.Cont
 	return rsp, nil
 }
 
+func HelloServiceService_HandleThird_Handler(svr interface{}, ctx context.Context, f server.FilterFunc) (interface{}, error) {
+	req := &HelloThirdReq{}
+	filters, err := f(req)
+	if err != nil {
+		return nil, err
+	}
+	handleFunc := func(ctx context.Context, reqbody interface{}) (interface{}, error) {
+		return svr.(HelloServiceService).HandleThird(ctx, reqbody.(*HelloThirdReq))
+	}
+
+	var rsp interface{}
+	rsp, err = filters.Filter(ctx, req, handleFunc)
+	if err != nil {
+		return nil, err
+	}
+	return rsp, nil
+}
+
 // HelloServiceServer_ServiceDesc descriptor for server.RegisterService.
 var HelloServiceServer_ServiceDesc = server.ServiceDesc{
 	ServiceName: "trpchello.HelloService",
@@ -72,6 +92,10 @@ var HelloServiceServer_ServiceDesc = server.ServiceDesc{
 		{
 			Name: "/trpchello.HelloService/HandleSeconds",
 			Func: HelloServiceService_HandleSeconds_Handler,
+		},
+		{
+			Name: "/trpchello.HelloService/HandleThird",
+			Func: HelloServiceService_HandleThird_Handler,
 		},
 	},
 }
@@ -93,6 +117,9 @@ func (s *UnimplementedHelloService) HandleFirst(ctx context.Context, req *HelloR
 func (s *UnimplementedHelloService) HandleSeconds(ctx context.Context, req *HelloSecondReq) (*HelloSecondRsp, error) {
 	return nil, errors.New("rpc HandleSeconds of service HelloService is not implemented")
 }
+func (s *UnimplementedHelloService) HandleThird(ctx context.Context, req *HelloThirdReq) (*HelloThirdRsp, error) {
+	return nil, errors.New("rpc HandleThird of service HelloService is not implemented")
+}
 
 // END --------------------------------- Default Unimplemented Server Service --------------------------------- END
 
@@ -105,6 +132,8 @@ type HelloServiceClientProxy interface {
 	HandleFirst(ctx context.Context, req *HelloReq, opts ...client.Option) (rsp *HelloRsp, err error)
 
 	HandleSeconds(ctx context.Context, req *HelloSecondReq, opts ...client.Option) (rsp *HelloSecondRsp, err error)
+
+	HandleThird(ctx context.Context, req *HelloThirdReq, opts ...client.Option) (rsp *HelloThirdRsp, err error)
 }
 
 type HelloServiceClientProxyImpl struct {
@@ -150,6 +179,26 @@ func (c *HelloServiceClientProxyImpl) HandleSeconds(ctx context.Context, req *He
 	callopts = append(callopts, c.opts...)
 	callopts = append(callopts, opts...)
 	rsp := &HelloSecondRsp{}
+	if err := c.client.Invoke(ctx, req, rsp, callopts...); err != nil {
+		return nil, err
+	}
+	return rsp, nil
+}
+
+func (c *HelloServiceClientProxyImpl) HandleThird(ctx context.Context, req *HelloThirdReq, opts ...client.Option) (*HelloThirdRsp, error) {
+	ctx, msg := codec.WithCloneMessage(ctx)
+	defer codec.PutBackMessage(msg)
+	msg.WithClientRPCName("/trpchello.HelloService/HandleThird")
+	msg.WithCalleeServiceName(HelloServiceServer_ServiceDesc.ServiceName)
+	msg.WithCalleeApp("")
+	msg.WithCalleeServer("")
+	msg.WithCalleeService("HelloService")
+	msg.WithCalleeMethod("HandleThird")
+	msg.WithSerializationType(codec.SerializationTypePB)
+	callopts := make([]client.Option, 0, len(c.opts)+len(opts))
+	callopts = append(callopts, c.opts...)
+	callopts = append(callopts, opts...)
+	rsp := &HelloThirdRsp{}
 	if err := c.client.Invoke(ctx, req, rsp, callopts...); err != nil {
 		return nil, err
 	}

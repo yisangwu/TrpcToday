@@ -22,7 +22,20 @@ message HelloSecondRsp {
 	int64 timestamp = 3;
 }
 
+
+message HelloThirdReq {
+	string message = 1;
+}
+
+message HelloThirdRsp {
+	int32 code = 1;
+	string message = 2;
+	int64 timestamp = 3;
+}
+
+
 service HelloService {
 	rpc HandleFirst(HelloReq) returns (HelloRsp);
 	rpc HandleSeconds(HelloSecondReq) returns (HelloSecondRsp);
+	rpc HandleThird(HelloThirdReq) returns (HelloThirdRsp);
 }
