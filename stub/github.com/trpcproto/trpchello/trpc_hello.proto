@@ -1,0 +1,28 @@
+syntax = "proto3";
+package trpchello;
+option go_package = "github.com/trpcproto/trpchello";
+
+message HelloReq {
+	string message = 1;
+}
+
+message HelloRsp {
+	int32 code = 1;
+	string message = 2;
+	int64 timestamp = 3;
+}
+
+message HelloSecondReq {
+	string message = 1;
+}
+
+message HelloSecondRsp {
+	int32 code = 1;
+	string message = 2;
+	int64 timestamp = 3;
+}
+
+service HelloService {
+	rpc HandleFirst(HelloReq) returns (HelloRsp);
+	rpc HandleSeconds(HelloSecondReq) returns (HelloSecondRsp);
+}
